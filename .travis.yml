@@ -3,7 +3,7 @@ services:
  - docker
 
 before-install:
- - docker build - ehtelion/react-test -f ./client/Dockerfile.dev ./client
+ - docker build -t ehtelion/react-test -f ./client/Dockerfile.dev ./client
 
 script:
  - docker run ehtelion/react-test npm test -- --coverage
