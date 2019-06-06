@@ -1,0 +1,22 @@
+sudo: required
+services: 
+ - docker
+
+before-install:
+ - docker build - ehtelion/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+ - docker run ehtelion/react-test npm test -- --coverage
+
+after_success:
+ - docker build -t ehtelion/multi-client ./client
+ - docker build -t ehtelion/multi-nginx ./nginx
+ - docker build -t ehtelion/multi-server ./server
+ - docker build -t ehtelion/multi-worker ./worker
+ #Log in to the docker CLI
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+ #takoe those images and push to docker hub
+ - docker push ehtelion/multi-client
+ - docker push ehtelion/multi-worker
+ - docker push ehtelion/multi-server
+ - docker push ehtelion/multi-nginx
